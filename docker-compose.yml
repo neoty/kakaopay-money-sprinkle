@@ -1,15 +1,15 @@
 version: "2"
 services:
-  kpdb:
+  db:
     image: linuxserver/mariadb:version-110.4.17mariabionic
     container_name: mariadb
     environment:
-      - MYSQL_USER=kakaopay
-      - MYSQL_PASSWORD=kakaopay
-      - MYSQL_DATABASE=kakaopay
+      - MYSQL_USER=develop
+      - MYSQL_PASSWORD=develop
+      - MYSQL_DATABASE=develop
     ports:
       - 3306:3306/tcp
-  kpredis:
+  redis:
     image: bitnami/redis:latest
     environment:
       - ALLOW_EMPTY_PASSWORD=yes
