@@ -1,149 +1,86 @@
-# 카카오페이 뿌리기 
-
+# 카카오페이 뿌리기
 카카오페이 뿌리기 기능 구현하기
 
-
-# 사용스택 
-
+# 사용스택
 * java - openjdk 11.0.6(020-01-14)
 * docker(docker-compose)
 	* mariadb10.4
 	* redis
 
-# 프로젝트 특징
-* 프로젝트 구조는 레이어 구조
-* JPA(연관 관계는 미사용)
-* 별도의 응답 코드는 없으며, http 기본 header status 구조를 사용
-	* 메세지는 별도 사용
+# 구동
+### 저장소 clone
+```shell
+$ git clone https://github.com/neoty/kakaopay-money-sprinkle.git
+$ cd kakaopay-money-sprinkle
+```
 
+### 기본 스택 구동
+```shell
+$ docker-compose up -d
+```
+
+### 빌드및 테스트
+```shell
+$ ./gradlew build
+```
+
+### 실행
+```shell
+$ java -jar ./build/libs/sprinkle-deploy.jar
+```
+
+# 프로젝트 특징
+* 레이어 구조 채용
+* JPA(연관 관계는 미사용)
+* 기본 http status code를 사용
+	* 메세지는 별도 정의 사용
+
+# ERD
+### sprinkle
+| 이름         | 속성                       | 설명         |
+|------------|--------------------------|------------|
+| id         | binary(16) not null      | 뿌리기 고유 아이디 |
+| amount     | int(1) unsigned not null | 뿌린 금액      |
+| room_id    | varbinary(10) not null   | 대화방 아이디    |
+| token      | varbinary(3) not null    | 뿌리기 토큰     |
+| user_id    | varchar(100) not null    | 뿌린 사람 아이디  |
+| created_at | datetime(6)              | 뿌린 시각      |
+### receive
+| 이름          | 속성                       | 설명        |
+|-------------|--------------------------|-----------|
+| id          | binary(16) not null      | 받기 고유 아이디 |
+| amount      | int(1) unsigned not null | 받은 금액     |
+| sprinkle_id | binary(16) not null      | 뿌리기 아이디   |
+| created_at  | datetime(6)              | 뿌린 시각     |
 
 # 주요 문제에 대한 해결 전략
+## 요청값 VALIDATION
+* X-USER-ID
+  * 0~9를 포함한 숫자 형태와 1~255자(`^[0-9]{1,100}$`)
+* X-ROOM-ID
+  * 대소문자를 포함한 10자(`^[a-zA-Z]{10}$`)
+    * binary 데이터로 case-senstive
+* 뿌리기 요청 정보
+  * 뿌리기 숫자 (최소:1, 최대: 1만)
+  * 뿌리기 금액 (최소:1, 최대: 1억)
+* 토큰(뿌리기 토큰)
+  * 대소문자를 포함한 3자(`^[a-zA-Z]{3}$`)
+    * binary 데이터로 case-senstive
+    
+## 뿌리기
+* 뿌린 금액에 대비하여 인원별 최소 1원 이상 보장
+* 뿌리기 생성 후 받을수 있는 금액에 대해선 `REDIS List` 를 이용하여 저장
+  * 불필요한 받기 금액리스트 생성을 회피하고, 원자성 보장  
+* 토큰 중복
+  * 같은 아이디와 같은 토큰에 대해서 7일 동안 생성된 기록이 없으면 유효한 토큰으로 간주
+    * 존재 시 재시도 오류 발생
+* 받기 완료된 이후 최초 데이터 기록(데이터베이스)
 
-All your files and folders are presented as a tree in the file explorer. You can switch from one to another by clicking a file in the tree.
+## 받기
+* 뿌리기 데이터 조회
+  * 토큰및 대화방 아이디와 현재 시간부터 10분 전까지만 조회
+* 받기에 대한 원자성 보장 
+  * 유효한 받기 상태에서 `REDIS POP`하여 최종적으로 받을 금액을 선정
 
-## Rename a file
-
-You can rename the current file by clicking the file name in the navigation bar or by clicking the **Rename** button in the file explorer.
-
-## Delete a file
-
-You can delete the current file by clicking the **Remove** button in the file explorer. The file will be moved into the **Trash** folder and automatically deleted after 7 days of inactivity.
-
-## Export a file
-
-You can export the current file by clicking **Export to disk** in the menu. You can choose to export the file as plain Markdown, as HTML using a Handlebars template or as a PDF.
-
-
-# Synchronization
-
-Synchronization is one of the biggest features of StackEdit. It enables you to synchronize any file in your workspace with other files stored in your **Google Drive**, your **Dropbox** and your **GitHub** accounts. This allows you to keep writing on other devices, collaborate with people you share the file with, integrate easily into your workflow... The synchronization mechanism takes place every minute in the background, downloading, merging, and uploading file modifications.
-
-There are two types of synchronization and they can complement each other:
-
-- The workspace synchronization will sync all your files, folders and settings automatically. This will allow you to fetch your workspace on any other device.
-	> To start syncing your workspace, just sign in with Google in the menu.
-
-- The file synchronization will keep one file of the workspace synced with one or multiple files in **Google Drive**, **Dropbox** or **GitHub**.
-	> Before starting to sync files, you must link an account in the **Synchronize** sub-menu.
-
-## Open a file
-
-You can open a file from **Google Drive**, **Dropbox** or **GitHub** by opening the **Synchronize** sub-menu and clicking **Open from**. Once opened in the workspace, any modification in the file will be automatically synced.
-
-## Save a file
-
-You can save any file of the workspace to **Google Drive**, **Dropbox** or **GitHub** by opening the **Synchronize** sub-menu and clicking **Save on**. Even if a file in the workspace is already synced, you can save it to another location. StackEdit can sync one file with multiple locations and accounts.
-
-## Synchronize a file
-
-Once your file is linked to a synchronized location, StackEdit will periodically synchronize it by downloading/uploading any modification. A merge will be performed if necessary and conflicts will be resolved.
-
-If you just have modified your file and you want to force syncing, click the **Synchronize now** button in the navigation bar.
-
-> **Note:** The **Synchronize now** button is disabled if you have no file to synchronize.
-
-## Manage file synchronization
-
-Since one file can be synced with multiple locations, you can list and manage synchronized locations by clicking **File synchronization** in the **Synchronize** sub-menu. This allows you to list and remove synchronized locations that are linked to your file.
-
-
-# Publication
-
-Publishing in StackEdit makes it simple for you to publish online your files. Once you're happy with a file, you can publish it to different hosting platforms like **Blogger**, **Dropbox**, **Gist**, **GitHub**, **Google Drive**, **WordPress** and **Zendesk**. With [Handlebars templates](http://handlebarsjs.com/), you have full control over what you export.
-
-> Before starting to publish, you must link an account in the **Publish** sub-menu.
-
-## Publish a File
-
-You can publish your file by opening the **Publish** sub-menu and by clicking **Publish to**. For some locations, you can choose between the following formats:
-
-- Markdown: publish the Markdown text on a website that can interpret it (**GitHub** for instance),
-- HTML: publish the file converted to HTML via a Handlebars template (on a blog for example).
-
-## Update a publication
-
-After publishing, StackEdit keeps your file linked to that publication which makes it easy for you to re-publish it. Once you have modified your file and you want to update your publication, click on the **Publish now** button in the navigation bar.
-
-> **Note:** The **Publish now** button is disabled if your file has not been published yet.
-
-## Manage file publication
-
-Since one file can be published to multiple locations, you can list and manage publish locations by clicking **File publication** in the **Publish** sub-menu. This allows you to list and remove publication locations that are linked to your file.
-
-
-# Markdown extensions
-
-StackEdit extends the standard Markdown syntax by adding extra **Markdown extensions**, providing you with some nice features.
-
-> **ProTip:** You can disable any **Markdown extension** in the **File properties** dialog.
-
-
-## SmartyPants
-
-SmartyPants converts ASCII punctuation characters into "smart" typographic punctuation HTML entities. For example:
-
-|                |ASCII                          |HTML                         |
-|----------------|-------------------------------|-----------------------------|
-|Single backticks|`'Isn't this fun?'`            |'Isn't this fun?'            |
-|Quotes          |`"Isn't this fun?"`            |"Isn't this fun?"            |
-|Dashes          |`-- is en-dash, --- is em-dash`|-- is en-dash, --- is em-dash|
-
-
-## KaTeX
-
-You can render LaTeX mathematical expressions using [KaTeX](https://khan.github.io/KaTeX/):
-
-The *Gamma function* satisfying $\Gamma(n) = (n-1)!\quad\forall n\in\mathbb N$ is via the Euler integral
-
-$$
-\Gamma(z) = \int_0^\infty t^{z-1}e^{-t}dt\,.
-$$
-
-> You can find more information about **LaTeX** mathematical expressions [here](http://meta.math.stackexchange.com/questions/5020/mathjax-basic-tutorial-and-quick-reference).
-
-
-## UML diagrams
-
-You can render UML diagrams using [Mermaid](https://mermaidjs.github.io/). For example, this will produce a sequence diagram:
-
-```mermaid
-sequenceDiagram
-Alice ->> Bob: Hello Bob, how are you?
-Bob-->>John: How about you John?
-Bob--x Alice: I am good thanks!
-Bob-x John: I am good thanks!
-Note right of John: Bob thinks a long<br/>long time, so long<br/>that the text does<br/>not fit on a row.
-
-Bob-->Alice: Checking with John...
-Alice->John: Yes... John, how are you?
-```
-
-And this will produce a flow chart:
-
-```mermaid
-graph LR
-A[Square Rect] -- Link text --> B((Circle))
-A --> C(Round Rect)
-B --> D{Rhombus}
-C --> D
-```
+## 조회
+* 토큰및 기본 유저 아이디와 함께 최대 현재 시간부터 7일 이전까지만 조회 가능

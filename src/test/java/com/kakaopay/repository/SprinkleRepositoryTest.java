@@ -1,11 +1,13 @@
 package com.kakaopay.repository;
 
+import com.kakaopay.ApplicationTest;
 import com.kakaopay.constant.Constant;
 import com.kakaopay.entity.Sprinkle;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -16,7 +18,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
-class SprinkleRepositoryTest {
+class SprinkleRepositoryTest extends ApplicationTest {
 
     @Autowired
     private SprinkleRepository sprinkleRepository;

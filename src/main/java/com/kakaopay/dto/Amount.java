@@ -6,5 +6,5 @@ import lombok.Getter;
 @AllArgsConstructor
 @Getter
 public class Amount {
-    private Integer amount;
+    private final Integer amount;
 }

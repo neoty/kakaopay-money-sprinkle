@@ -1,0 +1,37 @@
+POST http://localhost
+Content-Type: application/json
+X-USER-ID: 00001
+X-ROOM-ID: abcdeABCDe
+
+{
+  "amount": 10000,
+  "number": 100
+}
+
+###
+POST http://localhost
+Content-Type: application/json
+X-USER-ID: 00001
+X-ROOM-ID: abcdeABCDe
+
+{
+  "amount": 100000000,
+  "number": 10000
+}
+
+###
+POST http://localhost
+Content-Type: application/json
+X-USER-ID: 00001
+X-ROOM-ID: abcdeABCDe
+
+{
+  "amount": 100000000,
+  "number": 10000
+}
+
+###
+POST http://localhost
+Content-Type: application/json
+X-USER-ID: 00001
+X-ROOM-ID: abcdeABCDe

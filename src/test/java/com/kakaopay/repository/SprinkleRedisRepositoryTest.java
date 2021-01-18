@@ -1,10 +1,12 @@
 package com.kakaopay.repository;
 
+import com.kakaopay.ApplicationTest;
 import com.kakaopay.constant.Constant;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,7 +14,7 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
-class SprinkleRedisRepositoryTest {
+class SprinkleRedisRepositoryTest extends ApplicationTest {
     @Autowired
     private SprinkleRedisRepository sprinkleRedisRepository;
 

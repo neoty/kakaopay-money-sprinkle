@@ -19,17 +19,17 @@ public class Sprinkle {
     @Column(columnDefinition = "BINARY(16)")
     private UUID id;
 
-    @Column
+    @Column(columnDefinition = "INT(1) UNSIGNED", nullable = false)
+    private Integer amount;
+
+    @Column(length = 100, nullable = false)
     private String userId;
 
-    @Column(columnDefinition = "BINARY(10)")
+    @Column(columnDefinition = "VARBINARY(10)", nullable = false)
     private String roomId;
 
-    @Column(columnDefinition = "BINARY(3)")
+    @Column(columnDefinition = "VARBINARY(3)", nullable = false)
     private String token;
-
-    @Column
-    private Integer amount;
 
     @Column
     @CreationTimestamp

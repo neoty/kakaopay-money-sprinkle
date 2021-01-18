@@ -1,5 +1,6 @@
 package com.kakaopay.service;
 
+import com.kakaopay.ApplicationTest;
 import com.kakaopay.dto.Token;
 import com.kakaopay.dto.request.User;
 import com.kakaopay.exception.business.*;
@@ -12,6 +13,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -19,7 +21,7 @@ import java.util.UUID;
 import static org.assertj.core.api.Assertions.*;
 
 @SpringBootTest
-class ValidationServiceTest {
+class ValidationServiceTest extends ApplicationTest {
     @Autowired
     private ValidationService validationService;
 

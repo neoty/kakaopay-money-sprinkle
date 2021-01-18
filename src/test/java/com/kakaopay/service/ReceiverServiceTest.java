@@ -1,5 +1,6 @@
 package com.kakaopay.service;
 
+import com.kakaopay.ApplicationTest;
 import com.kakaopay.dto.Token;
 import com.kakaopay.dto.request.User;
 import com.kakaopay.exception.business.InvalidReceiveRequestException;
@@ -10,6 +11,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.ActiveProfiles;
 
 import java.time.LocalDateTime;
 import java.util.*;
@@ -18,7 +20,7 @@ import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
 @SpringBootTest
-class ReceiverServiceTest {
+class ReceiverServiceTest extends ApplicationTest {
 
     @Autowired
     private ReceiverService receiverService;

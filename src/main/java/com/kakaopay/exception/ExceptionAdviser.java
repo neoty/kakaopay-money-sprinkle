@@ -5,10 +5,13 @@ import com.kakaopay.dto.reponse.ApiResponse;
 import com.kakaopay.exception.business.BusinessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingRequestHeaderException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.servlet.NoHandlerFoundException;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.ValidationException;
@@ -47,10 +50,41 @@ public class ExceptionAdviser {
      * @param httpServletResponse       httpServletResponse
      * @return                          응답
      */
-    @ExceptionHandler(value = {HttpMessageNotReadableException.class, MissingRequestHeaderException.class, HttpRequestMethodNotSupportedException.class})
+    @ExceptionHandler(value = {
+            HttpMessageNotReadableException.class,
+            HttpRequestMethodNotSupportedException.class,
+            HttpMediaTypeNotSupportedException.class,
+            NoHandlerFoundException.class
+    })
     public ApiResponse<Void> badRequestException(HttpServletResponse httpServletResponse) {
         httpServletResponse.setStatus(HttpStatus.BAD_REQUEST.value());
         return ApiResponse.fail(HttpStatus.BAD_REQUEST, Message.INVALID_REQUEST);
+    }
+
+    /**
+     * MethodArgumentNotValidExceptionHandler 처리
+     * @param httpServletResponse               httpServletResponse
+     * @param e                                 MethodArgumentNotValidException
+     * @return                                  응답
+     */
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ApiResponse<Void> MethodArgumentNotValidExceptionHandler(HttpServletResponse httpServletResponse, MethodArgumentNotValidException e) {
+        httpServletResponse.setStatus(HttpStatus.BAD_REQUEST.value());
+        return ApiResponse.fail(HttpStatus.BAD_REQUEST, e.getBindingResult().getAllErrors().get(0).getDefaultMessage());
+    }
+
+    /**
+     * MissingRequestHeaderExceptionHandler 처리
+     *
+     * @param httpServletResponse   httpServletResponse
+     * @param e                     MissingRequestHeaderException
+     * @return                      응답
+     */
+    @ExceptionHandler(MissingRequestHeaderException.class)
+    public ApiResponse<Void> MissingRequestHeaderExceptionHandler(HttpServletResponse httpServletResponse, MissingRequestHeaderException e) {
+        httpServletResponse.setStatus(HttpStatus.UNAUTHORIZED.value());
+        String format = String.format("헤더값이 누락 되었습니다.(%s)", e.getHeaderName());
+        return ApiResponse.fail(HttpStatus.UNAUTHORIZED, format);
     }
 
     /**

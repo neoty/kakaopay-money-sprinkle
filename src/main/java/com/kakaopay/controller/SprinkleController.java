@@ -11,6 +11,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 
 @RestController
@@ -31,7 +33,7 @@ public class SprinkleController {
     ApiResponse<Token> sprinkleSubmit(
             @RequestHeader(Constant.HEADER_USER_ID) @Pattern(regexp = Constant.REGEX_USER_ID, message = Message.INVALID_USER_ID) String userId,
             @RequestHeader(Constant.HEADER_ROOM_ID) @Pattern(regexp = Constant.REGEX_ROOM_ID, message = Message.INVALID_ROOM_ID) String roomId,
-            @RequestBody SprinkleSubmit sprinkleSubmit) {
+            @RequestBody @Valid SprinkleSubmit sprinkleSubmit) {
 
         User user = new User(userId);
         user.setRoomId(roomId);

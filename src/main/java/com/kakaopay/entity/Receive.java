@@ -12,20 +12,24 @@ import java.util.UUID;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(indexes = @Index(name = "sprinkle_id_index", columnList = "sprinkleId"))
+@Table(indexes = @Index(name = "sprinkle_id_index", columnList = "sprinkleId"), uniqueConstraints = {
+        @UniqueConstraint(
+                columnNames = {"sprinkleId", "userId"}
+        )
+})
 public class Receive {
     @Id
     @GeneratedValue
     @Column(columnDefinition = "BINARY(16)")
     private UUID id;
 
-    @Column(columnDefinition = "BINARY(16)")
+    @Column(columnDefinition = "BINARY(16)", nullable = false)
     private UUID sprinkleId;
 
-    @Column
+    @Column(length = 100, nullable = false)
     private String userId;
 
-    @Column
+    @Column(columnDefinition = "INT(1) UNSIGNED ", nullable = false)
     private Integer amount;
 
     @Column

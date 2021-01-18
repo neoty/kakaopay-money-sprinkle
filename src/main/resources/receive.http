@@ -1,0 +1,15 @@
+PUT http://localhost/Bye
+X-USER-ID: 002
+X-ROOM-ID: abcdeABCDe
+
+###
+PUT http://localhost/hSK
+X-USER-ID: 002
+X-ROOM-ID:
+
+###
+PUT http://localhost/hSK
+
+###
+PUT http://localhost/hSK
+X-USER-ID: 000

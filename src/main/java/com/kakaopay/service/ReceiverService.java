@@ -9,13 +9,11 @@ import com.kakaopay.exception.business.InvalidReceiveRequestException;
 import com.kakaopay.repository.ReceiveRepository;
 import com.kakaopay.repository.SprinkleRedisRepository;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.UUID;
 
 @Service
-@Slf4j
 @RequiredArgsConstructor
 public class ReceiverService {
     private final ValidationService validationService;
@@ -39,6 +37,7 @@ public class ReceiverService {
 
         String cacheKey = sprinkle.getUserId() + token.getToken();
         Amount receive = new Amount(sprinkleRedisRepository.getAmountByLeftPopInList(cacheKey));
+        
         if (receive.getAmount() == null) {
             throw new InvalidReceiveRequestException();
         }

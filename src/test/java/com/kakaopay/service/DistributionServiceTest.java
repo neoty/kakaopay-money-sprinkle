@@ -1,16 +1,18 @@
 package com.kakaopay.service;
 
+import com.kakaopay.ApplicationTest;
+import com.kakaopay.constant.Constant;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @SpringBootTest
-class DistributionServiceTest {
+class DistributionServiceTest extends ApplicationTest {
     @Autowired
     private DistributionService distributionService;
 
@@ -53,5 +55,18 @@ class DistributionServiceTest {
         // test
         int totalAmount = list.stream().mapToInt(integer -> integer).sum();
         assertThat(totalAmount).isEqualTo(amount);
+    }
+
+    @Test
+    void getShuffledAmount_최대_계산() {
+        // test
+        List<Integer> list = distributionService.getShuffledAmount(Constant.MAX_SPRINKLE_AMOUNT, Constant.MAX_SPRINKLE_NUMBER);
+
+        // assert
+        assertThat(list).hasSize(Constant.MAX_SPRINKLE_NUMBER);
+
+        // assert
+        int totalAmount = list.stream().mapToInt(integer -> integer).sum();
+        assertThat(totalAmount).isEqualTo(Constant.MAX_SPRINKLE_AMOUNT);
     }
 }

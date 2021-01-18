@@ -11,6 +11,14 @@ public class ApiResponse<T> {
     private String message;
     private T data;
 
+    /**
+     * 성공 메세지 템플릿
+     *
+     * @param data
+     * @param message
+     * @param <T>
+     * @return ApiResponse
+     */
     public static <T> ApiResponse<T> success(T data, String message) {
         return ApiResponse.<T>defaultBuilder()
                 .status(HttpStatus.OK.value())
@@ -19,6 +27,14 @@ public class ApiResponse<T> {
                 .build();
     }
 
+    /**
+     * 실패 메시지 템플릿
+     *
+     * @param status
+     * @param message
+     * @param <T>
+     * @return ApiResponse
+     */
     public static <T> ApiResponse<T> fail(HttpStatus status, String message) {
         return ApiResponse.<T>defaultBuilder()
                 .status(status.value())

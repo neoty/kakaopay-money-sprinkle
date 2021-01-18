@@ -1,5 +1,6 @@
 package com.kakaopay.service;
 
+import com.kakaopay.ApplicationTest;
 import com.kakaopay.dto.Token;
 import com.kakaopay.dto.request.User;
 import com.kakaopay.exception.business.NotFoundSprinkleException;
@@ -12,6 +13,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,7 +21,7 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.*;
 
 @SpringBootTest
-class LookupServiceTest {
+class LookupServiceTest extends ApplicationTest {
     @Autowired
     private LookupService lookupService;
 
@@ -56,7 +58,7 @@ class LookupServiceTest {
         //assert
         assertThat(lookup).isNotNull();
         assertThat(lookup.getSprinkleAmount()).isEqualTo(sprinkleAmount);
-        assertThat(sprinkle.getCreatedAt()).isEqualTo(lookup.getSprinkleTime());
+        assertThat(lookup.getSprinkleTime()).isNotNull();
         lookup.getReceiveInformation().forEach(receiveInformation -> {
             assertThat(receiveInformation.getReceivedAmount()).isEqualTo(receiveAmount);
             assertThat(receiveInformation.getUserId()).matches("[0-9]{1}");

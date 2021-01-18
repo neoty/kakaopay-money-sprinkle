@@ -12,5 +12,5 @@ import javax.validation.constraints.Pattern;
 @Getter
 public class Token {
     @Pattern(regexp = Constant.REGEX_TOKEN, message = Message.INVALID_TOKEN_ID)
-    private String token;
+    private final String token;
 }

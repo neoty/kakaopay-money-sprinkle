@@ -1,0 +1,10 @@
+GET http://localhost/Bye
+X-USER-ID: 00001
+
+###
+GET http://localhost/zzz
+X-USER-ID: 00001
+
+###
+GET http://localhost/zzz
+X-USER-ID:

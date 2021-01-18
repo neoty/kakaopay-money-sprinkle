@@ -54,7 +54,7 @@ public class DistributionService {
                 distributionAmount = distributionMaxAmount;
             } else if (distributionMaxAmount > currentNumber) {
                 // 인원별 최소 보장 금액 이상으로 금액을 배분 가능할 시
-                distributionAmount = randomDataGenerator.nextInt(1, (int) Math.round(distributionMaxAmount * 0.5));
+                distributionAmount = randomDataGenerator.nextInt(1, (int) Math.round(distributionMaxAmount * 0.4));
             }
 
             remainAmount = remainAmount - distributionAmount;
