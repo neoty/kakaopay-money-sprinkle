@@ -66,7 +66,7 @@ class SprinkleReceiveControllerTest extends ApplicationTest {
 
 
     @Test
-    void sprinkleSubmit_valid() throws Exception {
+    void sprinkleSubmit_valid_check() throws Exception {
         // given
         SprinkleSubmit sprinkleSubmit = new SprinkleSubmit();
         sprinkleSubmit.setAmount(10000);
@@ -84,4 +84,39 @@ class SprinkleReceiveControllerTest extends ApplicationTest {
                 .andExpect(status().is4xxClientError())
                 .andReturn();
     }
+
+    @Test
+    void sprinkleSubmit_바디_없을때() throws Exception {
+        // given
+        User user = new User(RandomStringUtils.randomNumeric(10));
+        user.setRoomId(RandomStringUtils.randomAlphabetic(10));
+
+        // test
+        MvcResult actions = mockMvc.perform(post("/")
+            .contentType(MediaType.APPLICATION_JSON)
+            .header("X-USER-ID", user.getUserId())
+            .header("X-ROOM-ID", user.getRoomId()))
+            .andDo(print())
+            .andExpect(status().is4xxClientError())
+            .andReturn();
+    }
+
+    @Test
+    void sprinkleSubmit_헤더없을때() throws Exception {
+        // given
+        SprinkleSubmit sprinkleSubmit = new SprinkleSubmit();
+        sprinkleSubmit.setAmount(10000);
+        sprinkleSubmit.setNumber(10);
+        User user = new User(RandomStringUtils.randomNumeric(10));
+        user.setRoomId(RandomStringUtils.randomAlphabetic(10));
+
+        // test
+        MvcResult actions = mockMvc.perform(post("/")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(objectMapper.writeValueAsString(sprinkleSubmit)))
+            .andDo(print())
+            .andExpect(status().is4xxClientError())
+            .andReturn();
+    }
+
 }
