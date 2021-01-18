@@ -1,3 +1,4 @@
+
 # 머니 뿌리기
 카카오페이 머니 뿌리기 기능 구현하기
 
@@ -72,8 +73,8 @@ $ java -jar ./build/libs/sprinkle-deploy.jar
 * 뿌리기 생성 후 받을수 있는 금액에 대해선 `REDIS LIST` 를 이용하여 저장
   * 불 필요한 받기 금액리스트 생성을 회피하고, 원자성 보장  
 * 토큰 중복
-  * 같은 아이디와 같은 토큰에 대해서 7일 동안 생성된 기록이 없으면 유효한 토큰으로 간주
-    * 존재 시 재시도 오류 발생
+  * 같은 아이디와 토큰에 대해서 7일 동안 생성된 기록이 없으면 유효한 토큰으로 간주
+    * 존재 시 재시도 오류 발생 노출
 
 ## 받기
 * 뿌리기 데이터 조회
@@ -84,3 +85,69 @@ $ java -jar ./build/libs/sprinkle-deploy.jar
 
 ## 조회
 * 토큰및 기본 유저 아이디와 함께 최대 현재 시간부터 7일 이전까지만 조회 가능
+
+# API SAMPLE
+## 뿌리기
+### Request
+```
+POST http://localhost
+Content-Type: application/json
+X-USER-ID: 00001
+X-ROOM-ID: abcdeABCDe
+
+{
+  "amount": 10000,
+  "number": 100
+}
+```
+### Response
+```
+{
+    "status": 200,
+    "message": "뿌리기가 성공하였습니다.",
+    "data": {
+        "token": "KCd"
+    }
+}
+```
+## 받기
+### Request
+```
+PUT http://localhost/KCd
+X-USER-ID: 00002
+X-ROOM-ID: abcdeABCDe
+```
+### Response
+```
+{
+    "status": 200,
+    "message": "받기를 성공하였습니다.",
+    "data": {
+        "amount": 498
+    }
+}
+```
+## 조회
+### Request
+```
+GET http://localhost/Bye
+X-USER-ID: 00001
+```
+### Response
+```
+{
+    "status": 200,
+    "message": "조회에 성공하였습니다.",
+    "data": {
+        "sprinkleTime": "2021-01-18T23:26:38.349148",
+        "sprinkleAmount": 10000,
+        "totalReceivedAmount": 498,
+        "receiveInformation": [
+            {
+                "receivedAmount": 498,
+                "userId": "422334123"
+            }
+        ]
+    }
+}
+```
