@@ -65,25 +65,24 @@ class ValidationService {
      * @param sprinkle  받고자 하는 뿌리기 정보
      */
     void checkReceivableOrElseThrow(User user, Sprinkle sprinkle) {
-        System.out.printf(user.toString());
-        System.out.printf(sprinkle.toString());
+        
         if (sprinkle.getCreatedAt().isBefore(LocalDateTime.now().minusSeconds(Constant.SPRINKLE_RECEIVE_EXPIRE_SECOND))) {
-            System.out.printf("1111111111111");
+            
             throw new InvalidReceiveRequestException();
         }
 
         if (user.getUserId().equals(sprinkle.getUserId())) {
-            System.out.printf("222222222222222");
+            
             throw new InvalidReceiveRequestException();
         }
 
         if (! user.getRoomId().equals(sprinkle.getRoomId())) {
-            System.out.printf("333333333333");
+            
             throw new InvalidReceiveRequestException();
         }
 
         if (receiveRepository.existsReceiveBySprinkleIdAndUserId(sprinkle.getId(), user.getUserId())) {
-            System.out.printf("44444444444444444");
+            
             throw new DuplicateReceiveRequestException();
         }
     }
